@@ -1,0 +1,143 @@
+{
+  "project_info": {
+    "project_number": "405832661950",
+    "firebase_url": "https://projectofirebase.firebaseio.com",
+    "project_id": "projectofirebase",
+    "storage_bucket": "projectofirebase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:405832661950:android:76a290763fe9ed19",
+        "android_client_info": {
+          "package_name": "challenge.code.andela.udacity.journalapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "405832661950-oict34uts2ps2g2ktv5h0hqibev49qvi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "challenge.code.andela.udacity.journalapp",
+            "certificate_hash": "b162358c35fabb79d7ef1b2ba79a1b86f1bc6ec3"
+          }
+        },
+        {
+          "client_id": "405832661950-j9ub3t90e3mp1da4ivqvors5tgddteo9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOlXcO7teXlziVcoiB_nzSrVoOKg68bRs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "405832661950-j9ub3t90e3mp1da4ivqvors5tgddteo9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:405832661950:android:0992c65865cec410",
+        "android_client_info": {
+          "package_name": "com.gdg.firebase.bernardo.firebaseandroid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "405832661950-1llmdmt20698kqu4vnc953tshvihkjrv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gdg.firebase.bernardo.firebaseandroid",
+            "certificate_hash": "adf38735a7079ffd90f2abcbf2dc7c9033ebfd52"
+          }
+        },
+        {
+          "client_id": "405832661950-j9ub3t90e3mp1da4ivqvors5tgddteo9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOlXcO7teXlziVcoiB_nzSrVoOKg68bRs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "405832661950-j9ub3t90e3mp1da4ivqvors5tgddteo9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:405832661950:android:64e58dacc0483faa",
+        "android_client_info": {
+          "package_name": "com.google.firebase.udacity.friendlychat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "405832661950-t0qdq39t85bjchskdlkgad66badlimcs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.google.firebase.udacity.friendlychat",
+            "certificate_hash": "b162358c35fabb79d7ef1b2ba79a1b86f1bc6ec3"
+          }
+        },
+        {
+          "client_id": "405832661950-j9ub3t90e3mp1da4ivqvors5tgddteo9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOlXcO7teXlziVcoiB_nzSrVoOKg68bRs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "405832661950-j9ub3t90e3mp1da4ivqvors5tgddteo9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
