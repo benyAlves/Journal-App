@@ -4,4 +4,12 @@
     <string name="no_internet_connection">Please verify your intenet connection</string>
     <string name="unknown_error">We could not sign in, try later</string>
     <string name="sign_out">Sign Out</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_detail">DetailActivity</string>
+    <string name="journal_text">My dad had given me a simple journal that I thought I\'d never use. When I found out he died in a car crash, that next week, I decided to start writing all my feelings in it because I\'m not really good at expressing them verbally. My journal was full of decent thoughts... Well some were decent,Until I met Dillon Taylor. He was the cocky, annoying, loud mouthed boy next door that wouldn\'t turn his music down if the queen of England walked in his room. So one night, I finished my diary entry and fell asleep. I left the window open because it was hot. Bad idea. I heard some fiddling in my room so I turned on my lamp. Only to see that annoying boy from next door\'s body was halfway out my room window-- with my diary in his hand. Josh, a socially awkward young adult embarks into making a living. Only to see that annoying boy from next door\'s body was halfway out my room window-- with my diary in his hand. Josh, a socially awkward young adult embarks into making a living.</string>
+    <string name="large_text">Title here</string>
+    <string name="date_time">16/06/2018 - 14:90</string>
+    <string name="title">Title</string>
 </resources>
