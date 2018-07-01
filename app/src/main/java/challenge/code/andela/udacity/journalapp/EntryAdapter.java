@@ -1,43 +1,26 @@
 package challenge.code.andela.udacity.journalapp;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.GlideBuilder;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
-
 import java.util.ArrayList;
-import java.util.zip.Inflater;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import challenge.code.andela.udacity.journalapp.model.JournalEntry;
-import challenge.code.andela.udacity.journalapp.utils.GlideApp;
+import challenge.code.andela.udacity.journalapp.utils.TimeAgo;
 
 public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.EntryViewHolder> {
 
-    private final Context context;
     private ArrayList<JournalEntry> entries;
     private OnClickJournalEntry mClickHandler;
 
-    public EntryAdapter(ArrayList<JournalEntry> entries, Context context, OnClickJournalEntry mClickHandler){
-        this.entries = entries;
-        this.context = context;
+    public EntryAdapter(OnClickJournalEntry mClickHandler){
         this.mClickHandler = mClickHandler;
     }
 
@@ -52,10 +35,11 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.EntryViewHol
     public void onBindViewHolder(@NonNull EntryViewHolder holder, int position) {
         JournalEntry entry = entries.get(position);
         holder.textViewBody.setText(entry.getBody());
+        holder.textViewDate.setText(TimeAgo.getTimeAgo(entry.getEntryDate()));
         if(entry.getTitle() != null) {
-            holder.textViewDate.setText(entry.getTitle());
+            holder.textViewTitle.setText(entry.getTitle());
         }else{
-            holder.textViewDate.setText(entry.getEntryDate());
+            holder.textViewTitle.setVisibility(View.GONE);
         }
 //        GlideApp.with(context)
 //                .load(entry.getImageUrl())
@@ -80,6 +64,17 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.EntryViewHol
         //ViewCompat.setTransitionName(holder.imageViewEntry,"name"+position);
     }
 
+    public ArrayList<JournalEntry> getEntries() {
+        return entries;
+    }
+
+    public void setEntries(ArrayList<JournalEntry> entries) {
+        this.entries = entries;
+        notifyDataSetChanged();
+    }
+
+
+
     @Override
     public int getItemCount() {
         return entries != null? entries.size(): 0;
@@ -91,8 +86,10 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.EntryViewHol
         TextView textViewDate;
         @BindView(R.id.textViewEntryBody)
         TextView textViewBody;
+        @BindView(R.id.textViewTitle)
+        TextView textViewTitle;
 
-        public EntryViewHolder(View itemView) {
+        EntryViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
@@ -100,7 +97,7 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.EntryViewHol
 
         @Override
         public void onClick(View v) {
-            mClickHandler.onClick(getAdapterPosition(), entries.get(getAdapterPosition()));
+            mClickHandler.onClick(entries.get(getAdapterPosition()));
         }
 
     }

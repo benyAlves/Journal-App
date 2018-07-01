@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".WriteJournalActivity">
-
-    <LinearLayout
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        tools:context=".WriteJournalActivity"
         android:orientation="vertical">
 
 
@@ -18,7 +15,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-condensed"
-        android:hint="Awesome title"/>
+        app:counterEnabled="true"
+        app:counterMaxLength="30"
+        android:hint="@string/awesome_title"
+        tools:ignore="MissingPrefix"
+        android:inputType="text" />
 
     <View
         android:layout_width="match_parent"
@@ -32,9 +33,6 @@
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"
         android:fontFamily="sans-serif-condensed"
-        android:hint="Write your journey here"/>
+        android:hint="@string/write_your_journey_here"/>
 
     </LinearLayout>
-
-
-</RelativeLayout>

@@ -1,9 +1,9 @@
 package challenge.code.andela.udacity.journalapp;
 
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.view.ViewCompat;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -27,9 +26,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,14 +49,17 @@ public class MainActivity extends AppCompatActivity implements OnClickJournalEnt
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     @BindView(R.id.my_recycler_view)
+    public
     RecyclerView recyclerView;
     @BindView(R.id.progress_bar)
+    public
     ProgressBar progressBar;
 
     private ChildEventListener mChildEventListener;
     private EntryAdapter entryAdapter;
-    private ArrayList<JournalEntry> listEntries;
+    public static ArrayList<JournalEntry> listEntries;
     private DatabaseReference mDatabase;
+    private Query myPostsQuery;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -61,25 +67,36 @@ public class MainActivity extends AppCompatActivity implements OnClickJournalEnt
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
-
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child(Utils.FIREBASE_CHILD).child(mFirebaseAuth.getUid());
         listEntries = new ArrayList<>();
 
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        recyclerView.setLayoutManager(linearLayoutManager);
+        entryAdapter = new EntryAdapter(this);
+        recyclerView.setAdapter(entryAdapter);
+
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        if(mFirebaseAuth.getUid() != null) {
+            mDatabase = FirebaseDatabase.getInstance().getReference().child(Utils.FIREBASE_CHILD).child(mFirebaseAuth.getUid());
+            myPostsQuery = mDatabase.orderByChild("entryDate").limitToFirst(10);
+        }
         showProgressBar();
+
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (mFirebaseAuth.getCurrentUser() != null) {
                     Log.i(TAG, "onCreate");
+                    mDatabase = FirebaseDatabase.getInstance().getReference().child(Utils.FIREBASE_CHILD).child(firebaseAuth.getUid());
+                    myPostsQuery = mDatabase.orderByChild("starCount");
                     if(savedInstanceState == null) {
                         attachDatabaseReadListener();
                     }else {
                         hideProgressBar();
                         listEntries = savedInstanceState.getParcelableArrayList(DATA);
-                        entryAdapter = new EntryAdapter(listEntries, getApplicationContext(), MainActivity.this);
-                        recyclerView.setAdapter(entryAdapter);
+                        entryAdapter.setEntries(listEntries);
                     }
                 } else {
                     startActivityForResult(
@@ -87,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements OnClickJournalEnt
                                     .createSignInIntentBuilder()
                                     .setTheme(R.style.LoginTheme)
                                     .setIsSmartLockEnabled(false)
+                                    .setLogo(R.drawable.logo)
                                     .setAvailableProviders(Arrays.asList(
                                             new AuthUI.IdpConfig.PhoneBuilder().build(),
                                             new AuthUI.IdpConfig.GoogleBuilder().build()))
@@ -97,12 +115,7 @@ public class MainActivity extends AppCompatActivity implements OnClickJournalEnt
         };
 
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        recyclerView.setLayoutManager(linearLayoutManager);
-        entryAdapter = new EntryAdapter(listEntries, getApplicationContext(), this);
-        recyclerView.setAdapter(entryAdapter);
+
 
     }
 
@@ -113,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements OnClickJournalEnt
         outState.putParcelableArrayList(DATA, listEntries);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -125,10 +139,12 @@ public class MainActivity extends AppCompatActivity implements OnClickJournalEnt
                 // Sign in failed
                 if (response == null) {
                     // User pressed back button
+
+                    detachDatabaseReadListener();
                     finish();
                 }
 
-                if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
+                if (Objects.requireNonNull(response.getError()).getErrorCode() == ErrorCodes.NO_NETWORK) {
                    showToast(R.string.no_internet_connection);
                     return;
                 }
@@ -183,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements OnClickJournalEnt
 
 
     @Override
-    public void onClick(int adapterPosition, JournalEntry journalEntry) {
+    public void onClick(JournalEntry journalEntry) {
         Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra(EXTRA_JOURNAL_ITEM, journalEntry);
         //intent.putExtra(EXTRA_JOURNAL_IMAGE_TRANSITION_NAME, ViewCompat.getTransitionName(imageViewEntry));
@@ -197,45 +213,71 @@ public class MainActivity extends AppCompatActivity implements OnClickJournalEnt
     }
 
     private void attachDatabaseReadListener() {
+
             if (mChildEventListener == null) {
+
+
                 mChildEventListener = new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         hideProgressBar();
                         JournalEntry journalEntry = dataSnapshot.getValue(JournalEntry.class);
+                        Log.i(TAG, "onChildAdded");
                         listEntries.add(journalEntry);
-                        entryAdapter.notifyDataSetChanged();
+                        Collections.sort(listEntries, Utils.byDate);
+                        entryAdapter.setEntries(listEntries);
                     }
 
                     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                        entryAdapter.notifyDataSetChanged();
+                        JournalEntry journalEntry = dataSnapshot.getValue(JournalEntry.class);
+                        for(int i = 0; i < listEntries.size(); i++){
+                            if(listEntries.get(i).getPushId().equals(journalEntry.getPushId())){
+                                listEntries.remove(i);
+                            }
+                        }
+                        listEntries.add(journalEntry);
+                        Collections.sort(listEntries, Utils.byDate);
+                        entryAdapter.setEntries(listEntries);
+                        Log.i(TAG, "onChildChanged");
                     }
 
                     public void onChildRemoved(DataSnapshot dataSnapshot) {
+                        Log.i(TAG, "onChildRemoved");
+                        JournalEntry journalEntry = dataSnapshot.getValue(JournalEntry.class);
+                        for(int i = 0; i < listEntries.size(); i++){
+                            if(listEntries.get(i).getPushId().equals(journalEntry.getPushId())){
+                                listEntries.remove(i);
+                            }
+                        }
+                        entryAdapter.setEntries(listEntries);
                     }
 
                     public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                        Log.i(TAG, "onChildMoved");
                     }
 
                     public void onCancelled(DatabaseError databaseError) {
+                        Log.i(TAG, "onCancelled");
                     }
                 };
-                mDatabase.addChildEventListener(mChildEventListener);
+                myPostsQuery.addChildEventListener(mChildEventListener);
             }
     }
 
     private void detachDatabaseReadListener() {
         if (mChildEventListener != null) {
-            mDatabase.removeEventListener(mChildEventListener);
+            myPostsQuery.removeEventListener(mChildEventListener);
             mChildEventListener = null;
         }
     }
 
-    public void showProgressBar(){
+
+
+    private void showProgressBar(){
         progressBar.setVisibility(View.VISIBLE);
     }
 
-    public void hideProgressBar(){
+    private void hideProgressBar(){
         progressBar.setVisibility(View.GONE);
     }
 }
