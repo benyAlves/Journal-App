@@ -3,34 +3,47 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="72dp"
+    android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
-    android:clickable="true">
+    android:clickable="true"
+    android:focusable="true">
 
     <TextView
         android:id="@+id/textViewEntryBody"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:layout_marginTop="8dp"
         android:ellipsize="end"
         android:fontFamily="sans-serif-condensed"
-        android:singleLine="true"
+        android:maxLines="2"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/textViewEntryDate"
-        app:layout_constraintTop_toBottomOf="@+id/textViewEntryDate"
+        app:layout_constraintStart_toStartOf="@+id/textViewTitle"
+        app:layout_constraintTop_toBottomOf="@+id/textViewTitle"
         tools:text="O dia na escola" />
 
     <TextView
         android:id="@+id/textViewEntryDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:textSize="12sp"
         android:fontFamily="sans-serif-condensed"
+        android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="10:47" />
+
+    <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textStyle="bold"
+        tools:text="O meu dia"
+        app:layout_constraintStart_toStartOf="@+id/textViewEntryDate"
+        app:layout_constraintTop_toBottomOf="@+id/textViewEntryDate" />
 </android.support.constraint.ConstraintLayout>
