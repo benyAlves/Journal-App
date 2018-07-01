@@ -1,7 +1,7 @@
 package challenge.code.andela.udacity.journalapp;
 
-import android.os.Parcelable;
-import android.support.annotation.NonNull;
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,8 +10,6 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -27,13 +25,14 @@ import challenge.code.andela.udacity.journalapp.utils.Utils;
 public class WriteJournalActivity extends AppCompatActivity {
 
     @BindView(R.id.tv_title)
+    public
     EditText tvTitle;
     @BindView(R.id.tv_body)
+    public
     EditText tvBody;
 
 
     private DatabaseReference mDatabase;
-    private FirebaseUser currentUser;
     private JournalEntry journalEntry;
 
 
@@ -50,7 +49,7 @@ public class WriteJournalActivity extends AppCompatActivity {
             tvBody.setText(journalEntry.getBody());
         }
 
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         mDatabase = FirebaseDatabase.getInstance().getReference().child(Utils.FIREBASE_CHILD).child(currentUser.getUid());
 
     }
@@ -76,23 +75,18 @@ public class WriteJournalActivity extends AppCompatActivity {
         String title = tvTitle.getText().toString();
         String body = tvBody.getText().toString();
         String path = "https://i.imgur.com/GqKwJmS.jpg";
+        if(body.trim().isEmpty()){
+            tvBody.setError("Write something first!");
+            return;
+        }
         if(journalEntry != null){
-            mDatabase.child(journalEntry.getPushId()).setValue(journalEntry)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(WriteJournalActivity.this, "Saved", Toast.LENGTH_SHORT).show();
-                                finish();
-                            } else {
-                                Toast.makeText(WriteJournalActivity.this,
-                                        "Journal could not be saved",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+            mDatabase.child(journalEntry.getPushId()).child("title").setValue(title);
+            mDatabase.child(journalEntry.getPushId()).child("body").setValue(body);
+            Intent intent = new Intent();
+            intent.putExtra(MainActivity.EXTRA_JOURNAL_ITEM, journalEntry);
+            setResult(Activity.RESULT_OK, intent);
         }else {
-            JournalEntry journalEntry = new JournalEntry(title, body, path, Utils.dateToString(new Date()));
+            JournalEntry journalEntry = new JournalEntry(title, body, new Date().getTime());
 
             DatabaseReference pushRef = mDatabase.push();
             String pushId = pushRef.getKey();
